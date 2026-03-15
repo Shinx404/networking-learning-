@@ -1,13 +1,26 @@
 #include <sys/socket.h>
 #include <sys/types.h>
-
+#include <netdb.h>
 
 
 int main(void){
-	struct sockaddr_in sa;
-	struct sockaddr_in6 sa6;
+	int status;
+	struct addrinfo hints;
+	struct addrinfo *servinfo;
+
+	memset(&hints, 0, sizeof hints);
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_flags = AI_PASSIVE;
+
+	if((status = getaddrinfo(NULL,"3490", &hints, &servinfo)) != 0){
+		fprint(stderr,"gai error: %s\n", gai_strerror(status));
+		exit(1);
+	}
+
+	//here comes the rest of code
 	
-	sa6.sin6_addr = in6addr_any;
-	sa.sin_addr.s_addr = INADDR_ANY;
+	freeaddrinfo(servinfo);
+
 	return 0;
 }
